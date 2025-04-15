@@ -96,7 +96,12 @@ String[] sizes = {"Small ($8)", "Medium ($12)", "Large ($16)", "Super ($20)"};
             blackOlives.setSelected(false);
             despair.setSelected(false);
         });
+        JTextArea orderSummaryArea = new JTextArea(20, 40);
+        orderSummaryArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(orderSummaryArea);
 
+        orderPanel.setBorder(BorderFactory.createTitledBorder("Order Summary"));
+        orderPanel.add(scrollPane);
         //order button functionality
         orderButton.addActionListener(e -> {
             String crust = "";
@@ -106,10 +111,54 @@ String[] sizes = {"Small ($8)", "Medium ($12)", "Large ($16)", "Super ($20)"};
 
             if (crust.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please select a crust type.");
+                return;
             }
+            int sizeIndex = sizeCombo.getSelectedIndex();
+            //sizes already declared earlier
+           // String[] sizes = {"Small ($8)", "Medium ($12)", "Large ($16)", "Super ($20)"};
+            double[] prices = {8, 12, 16, 20};
+            String sizeLabel = sizes[sizeIndex];
+            double basePrice = prices[sizeIndex];
 
-                });
+        //topping functionality
+        StringBuilder toppings = new StringBuilder();
+        int toppingCount = 0;
+        JCheckBox[] toppingBoxes = {
+                pepperoni, mushrooms, onions, sausage, bacon, extraCheese, blackOlives, despair
+        };
+        for (JCheckBox toppingBox : toppingBoxes) {
+            if (toppingBox.isSelected()) {
+                toppings.append(toppingBox.getText()).append("\t\t$1.00\n");
+                toppingCount++;
+            }
+        }
+        //must get on topping or else
+       /* if (toppingCount == 0) {
+            JOptionPane.showMessageDialog(null, "Please select at least one topping.");
+            return;
+        }*/
+        //calculate total
+        //double total = prices[sizeIndex] + toppingCount;
+        //StringBuilder orderSummaryText = new StringBuilder();
+        //orderSummaryText.append("Crust: ").append(crust).append("\n");
 
+        //already declared earlier
+        // final double[] prices = {8, 12, 16, 20};
+        double subTotal = prices[sizeCombo.getSelectedIndex()] + toppingCount;
+        double tax = subTotal * 0.07;
+        double total = subTotal + tax;
+
+        String receipt = "=========================================\n";
+        receipt += crust + " Crust, " + sizeLabel + " Size\t\t$" + String.format("%.2f", basePrice) + "\n";
+        receipt += toppings.toString();
+        receipt += "\nSub-total:\t\t$" + String.format("%.2f", subTotal) + "\n";
+        receipt += "Tax:\t\t\t$" + String.format("%.2f", tax) + "\n";
+        receipt += "------------------------------------------------------\n";
+        receipt += "Total:\t\t\t$" + String.format("%.2f", total) + "\n";
+        receipt += "=========================================";
+
+        orderSummaryArea.setText(receipt);
+        });
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new GridLayout(1, 3));
         optionsPanel.add(crustPanel);
@@ -121,13 +170,14 @@ String[] sizes = {"Small ($8)", "Medium ($12)", "Large ($16)", "Super ($20)"};
         add(buttonPanel, BorderLayout.SOUTH);
 
         //order summary
-        JTextArea orderSummary = new JTextArea(20, 40);
-        orderSummary.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(orderSummary);
+        /*
+        JTextArea orderSummaryArea = new JTextArea(20, 40);
+        orderSummaryArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(orderSummaryArea);
 
         orderPanel.setBorder(BorderFactory.createTitledBorder("Order Summary"));
         orderPanel.add(scrollPane);
-
+*/
         setVisible(true);
 
     }
